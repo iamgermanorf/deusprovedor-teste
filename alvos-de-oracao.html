@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meus Alvos de Oração</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night-deep: #12142b;
+    --night-mid: #2e2350;
+    --gold: #d4a24c;
+    --gold-soft: #e8c988;
+    --ember: #e8873a;
+    --parchment: #f5f1e6;
+    --rose: #8b5e6b;
+    --line: rgba(212,162,76,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 900px 500px at 50% 110%, rgba(232,135,58,0.16), transparent 60%),
+      linear-gradient(180deg, var(--night-deep) 0%, var(--night-mid) 100%);
+    font-family:'Inter', sans-serif;
+    color: var(--parchment);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding: 56px 20px 80px;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(245,241,230,0.5), transparent),
+      radial-gradient(1px 1px at 80% 10%, rgba(245,241,230,0.4), transparent),
+      radial-gradient(1.5px 1.5px at 60% 35%, rgba(212,162,76,0.5), transparent),
+      radial-gradient(1px 1px at 30% 60%, rgba(245,241,230,0.35), transparent),
+      radial-gradient(1px 1px at 90% 70%, rgba(212,162,76,0.4), transparent),
+      radial-gradient(1.5px 1.5px at 20% 85%, rgba(245,241,230,0.3), transparent),
+      radial-gradient(1px 1px at 70% 90%, rgba(212,162,76,0.35), transparent);
+    pointer-events:none;
+    z-index:0;
+  }
+  .wrap{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:640px;
+  }
+  .flame{
+    display:block;
+    margin: 0 auto 18px;
+    width:34px;
+    height:46px;
+  }
+  .flame-core{
+    animation: flicker 2.6s ease-in-out infinite;
+    transform-origin: 50% 90%;
+  }
+  @keyframes flicker{
+    0%,100%{ transform: scale(1) rotate(0deg); }
+    25%{ transform: scale(1.04, 0.97) rotate(-1.5deg); }
+    50%{ transform: scale(0.97,1.05) rotate(1deg); }
+    75%{ transform: scale(1.02,0.98) rotate(-0.5deg); }
+  }
+  h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    text-align:center;
+    font-size: 42px;
+    letter-spacing: 1px;
+    margin: 0 0 6px;
+    color: var(--gold-soft);
+  }
+  .subtitle{
+    text-align:center;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:19px;
+    color: var(--rose);
+    margin: 0 0 40px;
+  }
+  .divider{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin: 0 0 36px;
+    color: var(--gold);
+    opacity:0.6;
+  }
+  .divider .rule{ flex:1; height:1px; background: var(--line); }
+  .card{
+    background: rgba(245,241,230,0.04);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 32px 28px;
+    backdrop-filter: blur(6px);
+  }
+  label{
+    display:block;
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .input-row{
+    display:flex;
+    gap:10px;
+  }
+  input[type="text"]{
+    flex:1;
+    background: rgba(18,20,43,0.6);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 13px 14px;
+    color: var(--parchment);
+    font-family:'Cormorant Garamond', serif;
+    font-size: 19px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  input[type="text"]::placeholder{ color: rgba(245,241,230,0.35); font-style:italic;}
+  input[type="text"]:focus{ border-color: var(--gold); }
+  button{
+    font-family:'Inter', sans-serif;
+    font-size: 14px;
+    font-weight:600;
+    letter-spacing: 0.03em;
+    cursor:pointer;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  button:active{ transform: scale(0.97); }
+  .btn-send{
+    background: var(--gold);
+    color: var(--night-deep);
+    padding: 0 22px;
+    border:none;
+  }
+  .btn-send:hover{ background: var(--gold-soft); }
+  ul#list{
+    list-style:none;
+    margin: 26px 0 0;
+    padding:0;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  ul#list li{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    padding: 11px 14px;
+    background: rgba(18,20,43,0.5);
+    border: 1px solid rgba(212,162,76,0.18);
+    border-radius: 3px;
+    font-family:'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--parchment);
+    animation: fadein 0.35s ease;
+  }
+  @keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+  ul#list li .mini-flame{ color: var(--ember); flex-shrink:0; margin-top:2px; font-size:14px; }
+  ul#list li span.txt{ flex:1; line-height:1.35; }
+  ul#list li .remove{
+    background:none; border:none; color: rgba(245,241,230,0.4);
+    font-size:16px; cursor:pointer; padding:0 4px; line-height:1;
+  }
+  ul#list li .remove:hover{ color: var(--rose); }
+  .empty-hint{
+    margin-top: 22px;
+    text-align:center;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:15px;
+    color: rgba(245,241,230,0.35);
+  }
+  .actions{
+    display:flex;
+    justify-content:center;
+    margin-top: 34px;
+  }
+  .btn-confirm{
+    background: transparent;
+    color: var(--gold-soft);
+    border: 1px solid var(--gold);
+    padding: 13px 34px;
+    font-size: 14px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+  .btn-confirm:disabled{
+    opacity:0.3;
+    cursor:not-allowed;
+  }
+  .btn-confirm:not(:disabled):hover{
+    background: var(--gold);
+    color: var(--night-deep);
+  }
+  .count{
+    text-align:center;
+    font-size:12px;
+    color: rgba(245,241,230,0.4);
+    margin-top:10px;
+    letter-spacing:0.04em;
+  }
+
+  /* result view */
+  .result{
+    display:none;
+    text-align:center;
+  }
+  .result.show{ display:block; }
+  .form-view.hide{ display:none; }
+  .result img{
+    width:100%;
+    max-width:640px;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .result-actions{
+    display:flex;
+    gap:12px;
+    justify-content:center;
+    margin-top: 26px;
+    flex-wrap:wrap;
+  }
+  .btn-download{
+    background: var(--gold);
+    color: var(--night-deep);
+    border:none;
+    padding: 13px 30px;
+    font-size:14px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    text-decoration:none;
+    display:inline-block;
+  }
+  .btn-download:hover{ background: var(--gold-soft); }
+  .btn-back{
+    background: transparent;
+    border: 1px solid rgba(245,241,230,0.25);
+    color: rgba(245,241,230,0.7);
+    padding: 13px 26px;
+    font-size:13px;
+    letter-spacing:0.04em;
+  }
+  .btn-back:hover{ border-color: var(--gold); color: var(--gold-soft); }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <svg class="flame" viewBox="0 0 34 46">
+    <g class="flame-core">
+      <path d="M17 2 C 10 14, 4 20, 6 30 C 8 40, 14 44, 17 44 C 20 44, 26 40, 28 30 C 30 20, 24 14, 17 2 Z" fill="#e8873a"/>
+      <path d="M17 14 C 13 22, 10 26, 12 32 C 14 38, 15 40, 17 40 C 19 40, 20 38, 22 32 C 24 26, 21 22, 17 14 Z" fill="#f4cf7a"/>
+    </g>
+  </svg>
+
+  <div class="form-view" id="formView">
+    <h1>Meus Alvos de Oração</h1>
+    <p class="subtitle">Um espaço para guardar o que meu coração leva ao altar</p>
+    <div class="divider"><span class="rule"></span>✦<span class="rule"></span></div>
+
+    <div class="card">
+      <label for="target">Digite um alvo de oração</label>
+      <div class="input-row">
+        <input type="text" id="target" placeholder="Ex.: Saúde da minha mãe..." maxlength="140" autocomplete="off">
+        <button class="btn-send" id="sendBtn">Enviar</button>
+      </div>
+
+      <ul id="list"></ul>
+      <p class="empty-hint" id="emptyHint">Seus alvos aparecerão aqui, um a um.</p>
+
+      <div class="actions">
+        <button class="btn-confirm" id="confirmBtn" disabled>Confirmar e gerar imagem</button>
+      </div>
+      <p class="count" id="countLabel"></p>
+    </div>
+  </div>
+
+  <div class="result" id="resultView">
+    <h1>Sua imagem está pronta</h1>
+    <p class="subtitle">Guarde-a e volte a ela sempre que for orar</p>
+    <canvas id="canvas" width="1920" height="1080" style="display:none;"></canvas>
+    <img id="previewImg" alt="Imagem com os alvos de oração">
+    <div class="result-actions">
+      <a class="btn-download" id="downloadLink" download="meus-alvos-de-oracao.png">Baixar imagem</a>
+      <button class="btn-back" id="backBtn">Voltar e editar</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const targets = [];
+const input = document.getElementById('target');
+const sendBtn = document.getElementById('sendBtn');
+const list = document.getElementById('list');
+const emptyHint = document.getElementById('emptyHint');
+const confirmBtn = document.getElementById('confirmBtn');
+const countLabel = document.getElementById('countLabel');
+const formView = document.getElementById('formView');
+const resultView = document.getElementById('resultView');
+const backBtn = document.getElementById('backBtn');
+
+function renderList(){
+  list.innerHTML = '';
+  targets.forEach((t, i) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span class="mini-flame">✦</span><span class="txt"></span><button class="remove" title="Remover">✕</button>`;
+    li.querySelector('.txt').textContent = t;
+    li.querySelector('.remove').addEventListener('click', () => {
+      targets.splice(i,1);
+      renderList();
+    });
+    list.appendChild(li);
+  });
+  emptyHint.style.display = targets.length ? 'none' : 'block';
+  confirmBtn.disabled = targets.length === 0;
+  countLabel.textContent = targets.length
+    ? `${targets.length} alvo${targets.length > 1 ? 's' : ''} de oração adicionado${targets.length > 1 ? 's' : ''}`
+    : '';
+}
+
+function addTarget(){
+  const val = input.value.trim();
+  if(!val) return;
+  targets.push(val);
+  input.value = '';
+  input.focus();
+  renderList();
+}
+
+sendBtn.addEventListener('click', addTarget);
+input.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    addTarget();
+  }
+});
+
+confirmBtn.addEventListener('click', async () => {
+  if(targets.length === 0) return;
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = 'Preparando...';
+  try{
+    await document.fonts.load('600 64px "Cormorant Garamond"');
+    await document.fonts.load('italic 400 30px "Cormorant Garamond"');
+    await document.fonts.load('400 40px "Cormorant Garamond"');
+    await document.fonts.ready;
+  }catch(e){ /* segue mesmo se a fonte não carregar */ }
+  generateImage();
+  formView.classList.add('hide');
+  resultView.classList.add('show');
+  confirmBtn.disabled = false;
+  confirmBtn.textContent = 'Confirmar e gerar imagem';
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+
+backBtn.addEventListener('click', () => {
+  resultView.classList.remove('show');
+  formView.classList.remove('hide');
+});
+
+// ---- image generation ----
+function wrapText(ctx, text, maxWidth){
+  const words = text.split(' ');
+  const lines = [];
+  let current = '';
+  for(const w of words){
+    const test = current ? current + ' ' + w : w;
+    if(ctx.measureText(test).width > maxWidth && current){
+      lines.push(current);
+      current = w;
+    } else {
+      current = test;
+    }
+  }
+  if(current) lines.push(current);
+  return lines;
+}
+
+function drawFlameGlyph(ctx, cx, cy, scale, color){
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.scale(scale, scale);
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(0, -12);
+  ctx.bezierCurveTo(-7, -2, -10, 6, -6, 12);
+  ctx.bezierCurveTo(-3, 16, 3, 16, 6, 12);
+  ctx.bezierCurveTo(10, 6, 7, -2, 0, -12);
+  ctx.fill();
+  ctx.restore();
+}
+
+function generateImage(){
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+
+  // background gradient
+  const bg = ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0, '#12142b');
+  bg.addColorStop(1, '#2e2350');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,W,H);
+
+  // ember glow near bottom
+  const glow = ctx.createRadialGradient(W/2, H*1.05, 50, W/2, H*1.05, 900);
+  glow.addColorStop(0, 'rgba(232,135,58,0.20)');
+  glow.addColorStop(1, 'rgba(232,135,58,0)');
+  ctx.fillStyle = glow;
+  ctx.fillRect(0,0,W,H);
+
+  // stars
+  const rng = mulberry32(42);
+  ctx.save();
+  for(let i=0;i<140;i++){
+    const x = rng()*W, y = rng()*H*0.85;
+    const r = rng()*1.6 + 0.3;
+    ctx.beginPath();
+    ctx.fillStyle = i % 4 === 0 ? 'rgba(212,162,76,0.5)' : 'rgba(245,241,230,0.35)';
+    ctx.arc(x,y,r,0,Math.PI*2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // outer frame
+  const margin = 56;
+  ctx.strokeStyle = 'rgba(212,162,76,0.55)';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(margin, margin, W - margin*2, H - margin*2);
+  ctx.strokeStyle = 'rgba(212,162,76,0.25)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(margin+10, margin+10, W - (margin+10)*2, H - (margin+10)*2);
+
+  // corner flames
+  drawFlameGlyph(ctx, margin+34, margin+34, 1.4, '#d4a24c');
+  drawFlameGlyph(ctx, W-margin-34, margin+34, 1.4, '#d4a24c');
+  drawFlameGlyph(ctx, margin+34, H-margin-34, 1.4, '#d4a24c');
+  drawFlameGlyph(ctx, W-margin-34, H-margin-34, 1.4, '#d4a24c');
+
+  // header flame (larger, centered top)
+  drawFlameGlyph(ctx, W/2, 150, 2.6, '#e8873a');
+
+  // title
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#e8c988';
+  ctx.font = '600 64px "Cormorant Garamond", serif';
+  ctx.fillText('MEUS ALVOS DE ORAÇÃO', W/2, 250);
+
+  ctx.fillStyle = '#8b5e6b';
+  ctx.font = 'italic 400 30px "Cormorant Garamond", serif';
+  ctx.fillText('Guardo estes pedidos em oração', W/2, 296);
+
+  // divider
+  ctx.strokeStyle = 'rgba(212,162,76,0.35)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(W/2 - 180, 330);
+  ctx.lineTo(W/2 - 20, 330);
+  ctx.moveTo(W/2 + 20, 330);
+  ctx.lineTo(W/2 + 180, 330);
+  ctx.stroke();
+  ctx.fillStyle = '#d4a24c';
+  ctx.font = '20px serif';
+  ctx.fillText('✦', W/2, 337);
+
+  // determine font size based on count
+  const n = targets.length;
+  let fontSize = 40, lineGap = 14, bulletR = 6;
+  if(n > 6 && n <= 10){ fontSize = 32; lineGap = 12; }
+  else if(n > 10 && n <= 15){ fontSize = 27; lineGap = 10; }
+  else if(n > 15){ fontSize = 22; lineGap = 8; }
+
+  ctx.textAlign = 'left';
+  ctx.font = `400 ${fontSize}px "Cormorant Garamond", serif`;
+  const textMaxWidth = W - margin*2 - 200;
+
+  // pre-wrap all lines
+  const entries = targets.map(t => wrapText(ctx, t, textMaxWidth));
+  const lineHeight = fontSize * 1.28;
+  let totalHeight = 0;
+  entries.forEach(lines => { totalHeight += lines.length * lineHeight + lineGap; });
+
+  const contentTop = 380;
+  const contentBottom = H - 140;
+  const availableHeight = contentBottom - contentTop;
+  let startY = contentTop + Math.max(0, (availableHeight - totalHeight) / 2);
+
+  ctx.fillStyle = '#f5f1e6';
+  let y = startY;
+  const bulletX = W/2 - textMaxWidth/2 - 36;
+  const textX = W/2 - textMaxWidth/2;
+
+  entries.forEach(lines => {
+    drawFlameGlyph(ctx, bulletX, y - fontSize*0.32, 0.7, '#e8873a');
+    lines.forEach((line, idx) => {
+      ctx.fillStyle = '#f5f1e6';
+      ctx.fillText(line, textX, y);
+      y += lineHeight;
+    });
+    y += lineGap;
+  });
+
+  // footer
+  ctx.textAlign = 'center';
+  ctx.font = 'italic 22px "Cormorant Garamond", serif';
+  ctx.fillStyle = 'rgba(245,241,230,0.55)';
+  const dateStr = new Date().toLocaleDateString('pt-BR', { day:'2-digit', month:'long', year:'numeric' });
+  ctx.fillText(`Gerado em ${dateStr}`, W/2, H - margin - 26);
+
+  const dataUrl = canvas.toDataURL('image/png');
+  document.getElementById('previewImg').src = dataUrl;
+  document.getElementById('downloadLink').href = dataUrl;
+}
+
+function mulberry32(a){
+  return function(){
+    let t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+}
+
+renderList();
+</script>
+</body>
+</html>
